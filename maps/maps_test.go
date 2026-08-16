@@ -59,23 +59,24 @@ func TestAdd(t *testing.T) {
 	t.Run("new word", func(t *testing.T) {
 		dictionary := Dictionary{}
 
-		dictionary.Add("test", "This is a test")
-
 		word := "test"
 		definition := "This is a test"
 
+		err := dictionary.Add(word, definition)
+
+		assertErrors(t, err, nil)
 		assertDefinitions(t, dictionary, word, definition)
 	})
 
 	t.Run("exsited word", func(t *testing.T) {
 		dictionary := Dictionary{"test": "This is a test"}
+		word := "test"
+		definition := "This is a test"
 
-		err := dictionary.Add("test", "")
-		if err == nil {
-			t.Fatal("wanted a error but didn't get one")
-		}
+		err := dictionary.Add("test", "new test")
 
 		assertErrors(t, err, ErrKeyExsited)
+		assertDefinitions(t, dictionary, word, definition)
 	})
 }
 
