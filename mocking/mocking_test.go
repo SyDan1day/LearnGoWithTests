@@ -22,6 +22,6 @@ GO!`
 	}
 
 	if spySleeper.Calls != 4 {
-		t.Errorf("not enough call to sleeper, want 4 got %d", spySleeper.Calls)
+		t.Errorf("want spySleeper 4 calls but got %d", spySleeper.Calls)
 	}
 }

@@ -7,16 +7,10 @@ import (
 	"time"
 )
 
-const (
-	countdownStart = 3
-	finalWord      = "GO!"
-)
-
 type Sleeper interface {
 	Sleep()
 }
 
-// 用于test，使得测试不依赖于time.Sleep，而是调用次数。
 type SpySleeper struct {
 	Calls int
 }
@@ -25,25 +19,24 @@ func (s *SpySleeper) Sleep() {
 	s.Calls++
 }
 
-// 用于业务，在time.Sleep上包装一层Sleeper接口，使得业务和测试解耦。
-type ConfigurableSleeper struct {
+type ConfiguableSleeper struct {
 	time time.Duration
 }
 
-func (o *ConfigurableSleeper) Sleep() {
+func (o *ConfiguableSleeper) Sleep() {
 	time.Sleep(o.time)
 }
 
 func Countdown(w io.Writer, s Sleeper) {
-	for i := countdownStart; i > 0; i-- {
+	for i := 3; i > 0; i-- {
 		s.Sleep()
 		fmt.Fprintf(w, "%d\n", i)
 	}
 	s.Sleep()
-	fmt.Fprint(w, finalWord)
+	fmt.Fprint(w, "GO!")
 }
 
 func main() {
-	s := &ConfigurableSleeper{1 * time.Second}
+	s := &ConfiguableSleeper{1 * time.Second}
 	Countdown(os.Stdout, s)
 }
