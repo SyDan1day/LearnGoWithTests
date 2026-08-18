@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+const (
+	sleep = "sleep"
+	write = "write"
+)
+
 type Sleeper interface {
 	Sleep()
 }
@@ -25,6 +30,19 @@ type ConfiguableSleeper struct {
 
 func (o *ConfiguableSleeper) Sleep() {
 	time.Sleep(o.time)
+}
+
+type CountdownOperationSpy struct {
+	Calls []string
+}
+
+func (o *CountdownOperationSpy) Sleep() {
+	o.Calls = append(o.Calls, sleep)
+}
+
+func (o *CountdownOperationSpy) Write(p []byte) (n int, err error) {
+	o.Calls = append(o.Calls, write)
+	return
 }
 
 func Countdown(w io.Writer, s Sleeper) {
