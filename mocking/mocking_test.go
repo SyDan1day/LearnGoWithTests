@@ -2,11 +2,12 @@ package mocking
 
 import (
 	"bytes"
+	"reflect"
 	"testing"
 )
 
 func TestCountdown(t *testing.T) {
-	t.Run("countdown 3", func(t *testing.T) {
+	t.Run("print 3 to GO!", func(t *testing.T) {
 		buffer := &bytes.Buffer{}
 		spySleeper := &SpySleeper{}
 
@@ -24,6 +25,26 @@ GO!`
 
 		if spySleeper.Calls != 4 {
 			t.Errorf("want spySleeper 4 calls but got %d", spySleeper.Calls)
+		}
+	})
+
+	t.Run("sleep after every print", func(t *testing.T) {
+		spySleepPrinter := &CountdownOperationSpy{}
+
+		Countdown(spySleepPrinter, spySleepPrinter)
+
+		want := []string{
+			sleep,
+			write,
+			sleep,
+			write,
+			sleep,
+			write,
+			sleep,
+			write,
+		}
+		if !reflect.DeepEqual(want, spySleepPrinter.Calls) {
+			t.Errorf("wanted calls %v got %v", want, spySleepPrinter.Calls)
 		}
 	})
 }
