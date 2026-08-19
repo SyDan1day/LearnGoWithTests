@@ -1,22 +1,21 @@
 package selectTest
 
-import (
-	"net/http"
-	"time"
-)
+import "net/http"
 
-func Racer(url1 string, url2 string) string {
-	a := time.Now()
-	http.Get(url1)
-	aTime := time.Since(a)
+func ping(url string) chan bool {
+	ch := make(chan bool)
+	go func() {
+		http.Get(url)
+		ch <- true
+	}()
+	return ch
+}
 
-	b := time.Now()
-	http.Get(url2)
-	bTime := time.Since(b)
-
-	if aTime < bTime {
-		return url1
+func Racer(a, b string) (winner string) {
+	select {
+	case <-ping(a):
+		return a
+	case <-ping(b):
+		return b
 	}
-
-	return url2
 }
